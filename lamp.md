@@ -1,15 +1,23 @@
 Установка LAMP на ubuntu 12.10
 ==================
 
-php-fpm + apache2 + mysql
+php-fpm + apache2(mod_fastcgi + mod_suexec) + mysql
 
-###### Полезные ссылки
+###### Полезные ссылки на эту тему
 * http://www.howtoforge.com/using-php5-fpm-with-apache2-on-ubuntu-12.04-lts
 * http://www.fastcgi.com/mod_fastcgi/docs/mod_fastcgi.html#FastCgiExternalServer
+* http://x10hosting.com/forums/vps-tutorials/148894-debian-apache-2-2-fastcgi-php-5-suexec-easy-way.html
+* http://learnix.net/fastasscgi-part2/
 
 перед началом
 ```bash
 	sudo su
+```
+
+в случае каких-то изменений в конфигах
+```bash
+	service php5-fpm restart
+	service apache2 restart
 ```
 
 ### Установка Apache2
@@ -17,38 +25,15 @@ php-fpm + apache2 + mysql
 Установка php и apache2
 ```bash 
   	apt-get install apache2-mpm-worker
-	apt-get install libapache2-mod-fastcgi php5-fpm php5
-	a2enmod actions fastcgi alias
-	service apache2 restart
+	apt-get install libapache2-mod-fastcgi php5-fpm php5 apache2-suexec-custom
+	a2enmod actions fastcgi alias suexec
 ```
 
-Конфигурация модуля FPM. Можно делать для каждого хоста свою. Следует обратить внимание на тип подключения (```listen = /var/run/php5-fpm.sock```)
+Возможно придется раскоментировать строку SUExecWrapper ```nano /etc/apache2/mods-available/fastcgi.conf```
+
+Конфигурация модуля FPM. Делается для каждого пользователя (```listen = /var/run/php5-fpm.sock```)
 ```bash 
-	nano /etc/php5/fpm/pool.d/www.conf 
-```
-
-Стандартная конфигурация модуля FPM для каждого хоста. Этого файла не существует, необходимо его создать
-```bash
-	nano /etc/apache2/conf.d/php5-fpm.conf
-```
-
-Вставьте следующие строки
-```htaccess
-	<IfModule mod_fastcgi.c>  
-		AddHandler php5-fcgi .php  
-		
-		Action php5-fcgi /php5-fcgi
-		Alias /php5-fcgi /usr/lib/cgi-bin/php5-fcgi
-		
-		FastCGIExternalServer /usr/lib/cgi-bin/php5-fcgi -socket /var/run/php5-fpm.sock -pass-header Authorization
-		
-		<Directory /usr/lib/cgi-bin/php5-fcgi>  
-		  Options ExecCGI FollowSymLinks  
-		  SetHandler fastcgi-script  
-		  Order allow,deny  
-		  Allow from all  
-		</Directory>  
-	</IfModule>
+	nano /etc/php5/fpm/pool.d/alex.conf 
 ```
 
 Чтобы убрать назойливое предупреждение апача добавим файл
@@ -59,6 +44,53 @@ php-fpm + apache2 + mysql
 с таким содержимым
 ```
 	ServerName localhost
+```
+
+Пример конфигурации для сайта
+```
+<VirtualHost *:80>
+	ServerAdmin webmaster@localhost
+	ServerName weburg-parser.local
+	SuexecUserGroup alex alex
+	DocumentRoot /home/alex/public_html/weburg-parser.local/www
+	DirectoryIndex index.php index.html
+
+	<Directory />
+		Options FollowSymLinks
+		AllowOverride None
+	</Directory>
+
+	<Directory /home/alex/public_html/weburg-parser.local/www/>
+		Options ExecCGI FollowSymLinks
+		AllowOverride None
+		Order allow,deny
+		allow from all
+	</Directory>
+
+	<IfModule mod_fastcgi.c>  
+		AddHandler php5-fcgi .php  
+
+		Action php5-fcgi /php5-fcgi
+		Alias /php5-fcgi /usr/lib/cgi-bin/php5-fcgi
+
+		FastCGIExternalServer /usr/lib/cgi-bin/php5-fcgi -socket /var/run/php5-fpm-alex.sock -user alex -group alex
+
+		<Directory /usr/lib/cgi-bin/php5-fcgi>  
+		  Options ExecCGI FollowSymLinks  
+		  SetHandler fastcgi-script  
+		  Order allow,deny  
+		  Allow from all  
+		</Directory>  
+	</IfModule>
+
+	ErrorLog ${APACHE_LOG_DIR}/error.log
+
+	# Possible values include: debug, info, notice, warn, error, crit,
+	# alert, emerg.
+	LogLevel warn
+
+	CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
 ```
 
 ### Установка PHP
@@ -99,7 +131,7 @@ mysql
 	mysql> exit;
 ```
 
-###### phpmyadmin.
+###### phpmyadmin
 Будет предложена установка настроек по умолчанию для pma. Если вы хотите настройть pma вручную, смотрите доки ```/usr/share/doc/phpmyadmin```. Для корректной работы PMA трeбуется отдельный пользователь и своя база(phpmyadmin по-умолчанию)
 ```bash
 	apt-get install phpmyadmin
@@ -110,4 +142,4 @@ mysql
 	ln -s /etc/phpmyadmin/apache.conf phpmyadmin.conf
 ```
 
-Для проверки можно пройти по адресу http://localhost/phpmyadmin
+Для проверки можно пройти по адресу [http://localhost/phpmyadmin](http://localhost/phpmyadmin)
