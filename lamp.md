@@ -143,3 +143,9 @@ mysql
 ```
 
 Для проверки можно пройти по адресу [http://localhost/phpmyadmin](http://localhost/phpmyadmin)
+
+Для проверки работоспособости php, и, в особенности, SuExec можно сделать такой index.php
+```php
+	<?php echo system('whoami'); ?>
+	<?php phpinfo(); ?>
+```
