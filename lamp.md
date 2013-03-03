@@ -26,7 +26,7 @@ php-fpm + apache2(mod_fastcgi + mod_suexec) + mysql
 ```bash 
   	apt-get install apache2-mpm-worker
 	apt-get install libapache2-mod-fastcgi php5-fpm php5 apache2-suexec-custom
-	a2enmod actions fastcgi alias suexec
+	a2enmod actions fastcgi alias suexec rewrite
 ```
 
 Возможно придется раскоментировать строку SUExecWrapper ```nano /etc/apache2/mods-available/fastcgi.conf```
@@ -95,7 +95,7 @@ php-fpm + apache2(mod_fastcgi + mod_suexec) + mysql
 
 ### Установка PHP
 
-Посмотреть список модулей с кратким описанием можно командой ```bash apt-cache search php5```
+Посмотреть список модулей с кратким описанием можно командой ```apt-cache search php5```
 
 Большинство необходимых модулей устанавливается командой
 ```bash
