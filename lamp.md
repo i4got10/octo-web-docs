@@ -90,9 +90,9 @@ ServerName localhost
 	
 	<Directory /home/alex/public_html/weburg-parser.local/www/>
 		Options ExecCGI FollowSymLinks
-		AllowOverride None
+		AllowOverride all
 		Order allow,deny
-		allow from all
+		Allow from all
 	</Directory>
 	
 	<IfModule mod_fastcgi.c>  
