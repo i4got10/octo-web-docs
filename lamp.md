@@ -75,7 +75,7 @@ ServerName localhost
 ```
 
 Пример конфигурации для сайта
-```
+```apacheconf
 <VirtualHost *:80>
 	ServerAdmin webmaster@localhost
 	ServerName weburg-parser.local
@@ -113,8 +113,7 @@ ServerName localhost
 	
 	ErrorLog ${APACHE_LOG_DIR}/error.log
 	
-	# Possible values include: debug, info, notice, warn, error, crit,
-	# alert, emerg.
+	# Possible values include: debug, info, notice, warn, error, crit, alert, emerg.
 	LogLevel warn
 	
 	CustomLog ${APACHE_LOG_DIR}/access.log combined
