@@ -31,9 +31,37 @@ php-fpm + apache2(mod_fastcgi + mod_suexec) + mysql
 
 Возможно придется раскоментировать строку SUExecWrapper ```nano /etc/apache2/mods-available/fastcgi.conf```
 
-Конфигурация модуля FPM. Делается для каждого пользователя (```listen = /var/run/php5-fpm.sock```)
+Конфигурация модуля FPM. Делается для каждого пользователя, можно определять дополнительные настройки php.ini
 ```bash 
 	nano /etc/php5/fpm/pool.d/alex.conf 
+```
+
+пример файла
+```ini
+; pool name
+[alex]
+
+; system user
+user = alex
+group = alex
+
+; listen socket
+listen = /var/run/php5-fpm-alex.sock
+
+;process manager
+pm = dynamic
+pm.max_children = 5
+pm.start_servers = 2
+pm.min_spare_servers = 1
+pm.max_spare_servers = 3
+
+; chroot 
+chdir = /
+
+; PHP ini settings
+php_flag[display_errors] = on
+php_flag[display_startup_errors] = on
+php_admin_value[memory_limit] = 256M
 ```
 
 Чтобы убрать назойливое предупреждение апача добавим файл
