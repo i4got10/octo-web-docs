@@ -16,8 +16,7 @@ sudo su
 
 в случае каких-то изменений в конфигах
 ```bash
-service php5-fpm restart
-service apache2 restart
+service php5-fpm restart && service apache2 restart
 ```
 
 ### Установка Apache2
@@ -119,6 +118,9 @@ ServerName localhost
 	CustomLog ${APACHE_LOG_DIR}/access.log combined
 </VirtualHost>
 ```
+```
+echo "127.0.0.1 weburg-parser.local" >> /etc/hosts
+```
 
 ### Установка PHP
 
@@ -161,7 +163,13 @@ mysql> exit;
 ###### phpmyadmin
 Будет предложена установка настроек по умолчанию для pma. Если вы хотите настройть pma вручную, смотрите доки ```/usr/share/doc/phpmyadmin```. Для корректной работы PMA трeбуется отдельный пользователь и своя база(phpmyadmin по-умолчанию)
 ```bash
+add-apt-repository ppa:nijel/phpmyadmin
+apt-get update
 apt-get install phpmyadmin
+```
+PMA требует доступ к файлам в папке для подключения своих конфигов ```ls -l /etc/phpmyadmin/```(такое поведение определено в файле ```/etc/phpmyadmin/config.inc.php```), поэтому
+```bash
+usermod -a -G www-data alex
 ```
 Не все сборки подключают конфиг к апачу сами, поэтому
 ```bash
