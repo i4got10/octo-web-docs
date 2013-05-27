@@ -28,7 +28,7 @@ apt-get install libapache2-mod-fastcgi php5-fpm php5 apache2-suexec-custom
 a2enmod actions fastcgi alias suexec rewrite
 ```
 
-Возможно придется раскоментировать строку SUExecWrapper ```nano /etc/apache2/mods-available/fastcgi.conf```
+Возможно придется раскоментировать строку ```FastCgiWrapper /usr/lib/apache2/suexec``` ```nano /etc/apache2/mods-available/fastcgi.conf```
 
 Конфигурация модуля FPM. Делается для каждого пользователя, можно определять дополнительные настройки php.ini
 ```bash 
