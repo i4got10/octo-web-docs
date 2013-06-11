@@ -61,6 +61,8 @@ chdir = /
 php_flag[display_errors] = on
 php_flag[display_startup_errors] = on
 php_admin_value[memory_limit] = 256M
+php_admin_value[upload_max_filesize] = 32M
+php_admin_value[post_max_size] = 32M
 ```
 
 Чтобы убрать назойливое предупреждение апача добавим файл
