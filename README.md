@@ -1,4 +1,4 @@
-ducking-octo-sansa
+octo-web-docs 
 ==================
 
 Сбока полезных команд для web-development`а.
