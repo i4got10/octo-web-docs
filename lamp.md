@@ -179,6 +179,11 @@ cd /etc/apache2/conf.d/
 ln -s /etc/phpmyadmin/apache.conf phpmyadmin.conf
 ```
 
+Возможно вы захотите увеличить время жизни cookie в ```/etc/phpmyadmin/config.inc.php```
+```php
+$cfg['Servers'][$i]['LoginCookieValidity'] = 2592000; # 1 month
+```
+
 Для проверки можно пройти по адресу [http://localhost/phpmyadmin](http://localhost/phpmyadmin)
 
 Для проверки работоспособости php, и, в особенности, SuExec можно сделать такой index.php
