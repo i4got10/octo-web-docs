@@ -70,6 +70,7 @@ php_admin_value[xdebug.max_nesting_level] = 300
 php_admin_value[xdebug.profiler_enable] = 0
 php_admin_value[xdebug.profiler_enable_trigger] = 1 
 php_admin_value[xdebug.profiler_output_dir] = /home/alex/xdebug_profiler
+php_admin_value[xdebug.profiler_output_name] = cachegrind.%H
 ```
 
 Чтобы убрать назойливое предупреждение апача добавим файл
