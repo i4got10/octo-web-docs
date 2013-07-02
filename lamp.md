@@ -64,6 +64,12 @@ php_admin_value[memory_limit] = 256M
 php_admin_value[upload_max_filesize] = 32M
 php_admin_value[post_max_size] = 32M
 php_admin_value[xdebug.max_nesting_level] = 300
+
+; http://www.xdebug.org/docs/profiler
+; enabled by ?XDEBUG_PROFILE
+php_admin_value[xdebug.profiler_enable] = 0
+php_admin_value[xdebug.profiler_enable_trigger] = 1 
+php_admin_value[xdebug.profiler_output_dir] = /home/alex/xdebug_profiler
 ```
 
 Чтобы убрать назойливое предупреждение апача добавим файл
