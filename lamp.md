@@ -199,3 +199,9 @@ $cfg['Servers'][$i]['LoginCookieValidity'] = 2592000; # 1 month
 <?php echo system('whoami'); ?>
 <?php phpinfo(); ?>
 ```
+
+###### Memcached
+```bash
+apt-get install memcached
+```
+
