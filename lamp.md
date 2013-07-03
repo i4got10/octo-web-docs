@@ -138,7 +138,7 @@ echo "127.0.0.1 weburg-parser.local" >> /etc/hosts
 
 Большинство необходимых модулей устанавливается командой
 ```bash
-apt-get install php5-mysql php5-curl php5-gd php5-intl php-pear php5-imagick php5-imap php5-mcrypt php5-memcache php5-xdebug php5-sqlite
+apt-get install php5-mysql php5-curl php5-gd php5-intl php-pear php5-imagick php5-imap php5-mcrypt php5-memcached php5-xdebug php5-sqlite
 service php5-fpm restart
 ```
 
