@@ -21,6 +21,13 @@ service php5-fpm restart && service apache2 restart
 
 ### Установка Apache2
 
+Репозиторий в котором есть последняя версию php5.4
+```bash
+add-apt-repository ppa:ondrej/php5-oldstable
+apt-get update
+apt-get upgrade
+```
+
 Установка php и apache2
 ```bash 
 apt-get install apache2-mpm-worker
