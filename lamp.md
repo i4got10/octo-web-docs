@@ -201,6 +201,8 @@ $cfg['Servers'][$i]['LoginCookieValidity'] = 2592000; # 1 month
 
 Для проверки можно пройти по адресу [http://localhost/phpmyadmin](http://localhost/phpmyadmin)
 
+Скачать послежнюю версию можно [тут](http://www.phpmyadmin.net/home_page/downloads.php). Распаковать в `/usr/share/phpmyadmin`
+
 Для проверки работоспособости php, и, в особенности, SuExec можно сделать такой index.php
 ```php
 <?php echo system('whoami'); ?>
