@@ -214,3 +214,79 @@ $cfg['Servers'][$i]['LoginCookieValidity'] = 2592000; # 1 month
 apt-get install memcached
 ```
 
+### Установка nginx
+
+```bash
+apt-get install nginx
+service nginx start
+```
+
+Повесим apache на 8080 порт
+```bash
+perl -e "s/:80/:8080/g;" -pi $(find /etc/apache2/sites-available -type f)
+perl -e "s/80/8080/g;" -pi $(find /etc/apache2/ports.conf -type f)
+```
+
+Пример конфигурации для сайта
+
+```nginxconf
+server {
+    listen 80;
+
+    server_name megavika.local megavika.work;
+    root /home/alex/PhpstormProjects/megavika/web;
+
+    location / {
+        # try to serve file directly, fallback to rewrite
+        try_files $uri @rewriteapp;
+    }
+
+    location @rewriteapp {
+        # rewrite all to app.php
+        rewrite ^(.*)$ /app_dev.php/$1 last;
+    }
+
+    location ~ ^/(app|app_dev|config)\.php(/|$) {
+        fastcgi_pass unix:/var/run/php5-fpm-alex.sock;
+        fastcgi_split_path_info ^(.+\.php)(/.*)$;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param HTTPS off;
+    }
+
+    # Logging
+    error_log /var/log/nginx/megavika.local-error.log;
+    access_log /var/log/nginx/megavika.local-access.log;
+}
+```
+
+Пример конфигурации для сайта с переадресацией на apache
+
+```nginxconf
+upstream apache {
+    server localhost:8080;
+}
+
+server {
+    listen 80;
+
+    server_name qsb.local qsb.work;
+    root /home/alex/PhpstormProjects/quicksilver-boats/web;
+
+    # Перенаправление на back-end
+    location / {
+        proxy_pass http://apache;
+        include /etc/nginx/proxy_params;
+    }
+
+    # Статическиое наполнение отдает сам nginx
+    # back-end этим заниматься не должен
+    location ~* \.(jpg|jpeg|gif|png|ico|css|zip|tgz|gz|rar|bz2|doc|xls|exe|pdf|ppt|txt|tar|mid|midi|wav|bmp|rtf|js|mov)$ {
+        root /home/alex/PhpstormProjects/quicksilver-boats/web/;
+    }
+
+    # Logging
+    error_log /var/log/nginx/qsb.local-error.log;
+    access_log /var/log/nginx/qsb.local-access.log;
+}
+```
