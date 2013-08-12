@@ -203,6 +203,8 @@ $cfg['Servers'][$i]['LoginCookieValidity'] = 2592000; # 1 month
 
 Скачать послежнюю версию можно [тут](http://www.phpmyadmin.net/home_page/downloads.php). Распаковать в `/usr/share/phpmyadmin`
 
+Если не работает вкладка настройки - https://bugs.launchpad.net/ubuntu/+source/phpmyadmin/+bug/1175142
+
 Для проверки работоспособости php, и, в особенности, SuExec можно сделать такой index.php
 ```php
 <?php echo system('whoami'); ?>
@@ -288,5 +290,32 @@ server {
     # Logging
     error_log /var/log/nginx/qsb.local-error.log;
     access_log /var/log/nginx/qsb.local-access.log;
+}
+```
+
+Конфиг PMA для nginx. ```gedit gedit /etc/nginx/sites-available/default```
+
+```nginxconf
+location /phpmyadmin/ {
+	root /usr/share/;
+	index index.php index.html index.htm;
+	location ~ ^/phpmyadmin/(.+\.php)$ {
+		root /usr/share/;
+		fastcgi_pass unix:/var/run/php5-fpm-alex.sock;
+		fastcgi_split_path_info ^(.+\.php)(/.*)$;
+		include fastcgi_params;
+		fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+		fastcgi_param HTTPS off;
+		fastcgi_index index.php;
+	}
+	location ~* ^/phpmyadmin/(.+\.(jpg|jpeg|gif|css|png|js|ico|html|xml|txt))$ {
+	        root /usr/share/;
+	}
+}
+location /phpMyAdmin {
+	rewrite ^/* /phpmyadmin last;
+}
+location /mysql {
+	rewrite ^/* /phpmyadmin last;
 }
 ```
