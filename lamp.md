@@ -178,7 +178,10 @@ mysql> exit;
 ```
 
 ###### phpmyadmin
-Будет предложена установка настроек по умолчанию для pma. Если вы хотите настройть pma вручную, смотрите доки ```/usr/share/doc/phpmyadmin```. Для корректной работы PMA трeбуется отдельный пользователь и своя база(phpmyadmin по-умолчанию)
+Будет предложена установка настроек по умолчанию для pma. 
+Если вы хотите настройть pma вручную, смотрите доки ```/usr/share/doc/phpmyadmin```. 
+Для корректной работы PMA трeбуется отдельный пользователь и дополнительная база данных(phpmyadmin по-умолчанию).
+Для настройки можно использовать [скрипт настройки](http://localhost/phpmyadmin/doc/html/setup.html#setup_script).
 ```bash
 add-apt-repository ppa:nijel/phpmyadmin
 apt-get update
@@ -204,6 +207,8 @@ $cfg['Servers'][$i]['LoginCookieValidity'] = 2592000; # 1 month
 Скачать послежнюю версию можно [тут](http://www.phpmyadmin.net/home_page/downloads.php). Распаковать в `/usr/share/phpmyadmin`
 
 Если не работает вкладка настройки - https://bugs.launchpad.net/ubuntu/+source/phpmyadmin/+bug/1175142
+
+###### Сниппеты
 
 Для проверки работоспособости php, и, в особенности, SuExec можно сделать такой index.php
 ```php
