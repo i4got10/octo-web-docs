@@ -71,6 +71,7 @@ php_admin_value[memory_limit] = 256M
 php_admin_value[upload_max_filesize] = 32M
 php_admin_value[post_max_size] = 32M
 php_admin_value[xdebug.max_nesting_level] = 300
+php_admin_value[session.gc_maxlifetime] = 2592000
 
 ; http://www.xdebug.org/docs/profiler
 ; enabled by ?XDEBUG_PROFILE
