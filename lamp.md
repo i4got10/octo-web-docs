@@ -1,15 +1,20 @@
 Установка LAMP на ubuntu 12.10
 ==================
 
-php-fpm + apache2(mod_fastcgi + mod_suexec) + mysql
+Что в итоге получится:
+> php-fpm + apache2(mod_fastcgi + mod_suexec) + mysql
 
-###### Полезные ссылки на эту тему
+> либо php-fpm + nginx proxy + apache2
+
+> либо php-fpm + nginx
+
+#### Полезные ссылки на эту тему
 * http://www.howtoforge.com/using-php5-fpm-with-apache2-on-ubuntu-12.04-lts
 * http://www.fastcgi.com/mod_fastcgi/docs/mod_fastcgi.html#FastCgiExternalServer
 * http://x10hosting.com/forums/vps-tutorials/148894-debian-apache-2-2-fastcgi-php-5-suexec-easy-way.html
 * http://learnix.net/fastasscgi-part2/
 
-перед началом
+Перед началом работы
 ```bash
 sudo su
 ```
@@ -19,23 +24,27 @@ sudo su
 service php5-fpm restart && service apache2 restart
 ```
 
-### Установка Apache2
+## Установка php и apache2
 
-Репозиторий в котором есть последняя версию php5.4
+Репозиторий в котором есть последняя версия php5.4
 ```bash
 add-apt-repository ppa:ondrej/php5-oldstable
 apt-get update
 apt-get upgrade
 ```
 
-Установка php и apache2
+Установка пакетов
 ```bash 
 apt-get install apache2-mpm-worker
 apt-get install libapache2-mod-fastcgi php5-fpm php5 apache2-suexec-custom
 a2enmod actions fastcgi alias suexec rewrite
 ```
 
-Возможно придется раскоментировать строку ```FastCgiWrapper /usr/lib/apache2/suexec``` ```nano /etc/apache2/mods-available/fastcgi.conf```
+Возможно придется раскоментировать строку в файле```/etc/apache2/mods-available/fastcgi.conf```
+
+```
+FastCgiWrapper /usr/lib/apache2/suexec
+``` 
 
 Конфигурация модуля FPM. Делается для каждого пользователя, можно определять дополнительные настройки php.ini
 ```bash 
@@ -65,37 +74,45 @@ pm.max_spare_servers = 3
 chdir = /
 
 ; PHP ini settings
-php_flag[display_errors] = on
-php_flag[display_startup_errors] = on
-php_admin_value[memory_limit] = 256M
-php_admin_value[upload_max_filesize] = 32M
-php_admin_value[post_max_size] = 32M
-php_admin_value[xdebug.max_nesting_level] = 300
-
-; http://www.xdebug.org/docs/profiler
-; enabled by ?XDEBUG_PROFILE
-php_admin_value[xdebug.profiler_enable] = 0
-php_admin_value[xdebug.profiler_enable_trigger] = 1 
-php_admin_value[xdebug.profiler_output_dir] = /home/alex/xdebug_profiler
-php_admin_value[xdebug.profiler_output_name] = cachegrind.%H
+; php_flag[display_errors] = on
+; php_flag[display_startup_errors] = on
+; php_admin_value[memory_limit] = 256M
 ```
 
-Для увеличения времени жизни cookie добавить в ```/etc/php5/apache2/php.ini```
-```bash
+В папке ```/etc/php5``` лежат ini, отвечающие за настройки php в определенном режиме работы (*apache2/php.ini*, *cli/php.ini*, *fpm/php.ini*).
+Чтобы применить настройки сразу везде, удобно положить настройки в файл ```/etc/php5/conf.d/30-alex.ini```. Пример такого файла
+
+```ini
+; configuration for php dbase module
+extension=dbase.so
+
+[PHP]
+display_errors = On
+display_startup_errors = On
+
+memory_limit = 256M
+upload_max_filesize = 32M
+post_max_size = 32M
+
+; xdebug
+xdebug.max_nesting_level = 300
+; http://www.xdebug.org/docs/profiler(enabled by ?XDEBUG_PROFILE)
+xdebug.profiler_enable = 0
+xdebug.profiler_enable_trigger = 1
+xdebug.profiler_output_dir = /home/alex/xdebug_profiler
+xdebug.profiler_output_name = cachegrind.%H
+
+; увеличения времени жизни cookie
 session.gc_maxlifetime = 2592000
 ```
 
-Чтобы убрать назойливое предупреждение апача добавим файл
-```bash
-nano /etc/apache2/conf.d/default.conf
-```
-
-с таким содержимым
+Чтобы убрать назойливое предупреждение апача при запуске добавим файл ```/etc/apache2/conf.d/default.conf``` с таким содержимым
 ```
 ServerName localhost
 ```
 
-Пример конфигурации для сайта
+Пример конфигурации Apache 2.2 для сайта. Создается в папке */etc/apache2/sites-available*, далее делается symlink в папку */etc/apache2/sites-enabled*.
+
 ```apacheconf
 <VirtualHost *:80>
 	ServerAdmin webmaster@localhost
@@ -140,6 +157,8 @@ ServerName localhost
 	CustomLog ${APACHE_LOG_DIR}/access.log combined
 </VirtualHost>
 ```
+
+Необходимо не забыть добавить алиас в ```/etc/hosts```
 ```
 echo "127.0.0.1 weburg-parser.local" >> /etc/hosts
 ```
@@ -154,7 +173,7 @@ apt-get install php5-mysql php5-curl php5-gd php5-intl php-pear php5-imagick php
 service php5-fpm restart
 ```
 
-###### Установка phpunit
+#### Phpunit
 ```bash
 apt-get install phpunit
 ```
@@ -169,7 +188,6 @@ pear install --alldeps phpunit/PHPUnit
 
 ### Установка MySQL
 
-mysql
 ```bash
 apt-get install mysql-server mysql-client
 ```
@@ -182,7 +200,7 @@ mysql> SHOW DATABASES;
 mysql> exit;
 ```
 
-###### phpmyadmin
+#### phpmyadmin
 Будет предложена установка настроек по умолчанию для pma. 
 Если вы хотите настройть pma вручную, смотрите доки ```/usr/share/doc/phpmyadmin```. 
 Для корректной работы PMA трeбуется отдельный пользователь и дополнительная база данных(phpmyadmin по-умолчанию).
@@ -213,7 +231,7 @@ $cfg['Servers'][$i]['LoginCookieValidity'] = 2592000; # 1 month
 
 Если не работает вкладка настройки - https://bugs.launchpad.net/ubuntu/+source/phpmyadmin/+bug/1175142
 
-###### Сниппеты
+#### Сниппеты
 
 Для проверки работоспособости php, и, в особенности, SuExec можно сделать такой index.php
 ```php
@@ -221,12 +239,12 @@ $cfg['Servers'][$i]['LoginCookieValidity'] = 2592000; # 1 month
 <?php phpinfo(); ?>
 ```
 
-###### Memcached
+#### Memcached
 ```bash
 apt-get install memcached
 ```
 
-### Установка nginx
+## Установка nginx
 
 ```bash
 apt-get install nginx
@@ -303,7 +321,7 @@ server {
 }
 ```
 
-Конфиг PMA для nginx. ```gedit gedit /etc/nginx/sites-available/default```
+Конфиг PMA для nginx можно добавить в ```gedit /etc/nginx/sites-available/default```
 
 ```nginxconf
 location /phpmyadmin/ {
