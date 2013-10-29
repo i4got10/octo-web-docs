@@ -1,12 +1,10 @@
-Установка LAMP на ubuntu 12.10
+Установка LAMP на ubuntu 12.10|13.04
 ==================
 
 Что в итоге получится:
-> php-fpm + apache2(mod_fastcgi + mod_suexec) + mysql
-
-> либо php-fpm + nginx proxy + apache2
-
-> либо php-fpm + nginx
+> php-fpm + apache2(mod_fastcgi + mod_suexec) + mysql, либо  
+> php-fpm + nginx proxy + apache2, либо  
+> php-fpm + nginx
 
 #### Полезные ссылки на эту тему
 * http://www.howtoforge.com/using-php5-fpm-with-apache2-on-ubuntu-12.04-lts
@@ -40,13 +38,13 @@ apt-get install libapache2-mod-fastcgi php5-fpm php5 apache2-suexec-custom
 a2enmod actions fastcgi alias suexec rewrite
 ```
 
-Возможно придется раскоментировать строку в файле```/etc/apache2/mods-available/fastcgi.conf```
+Возможно придется раскоментировать строку в файле ```/etc/apache2/mods-available/fastcgi.conf```
 
 ```
 FastCgiWrapper /usr/lib/apache2/suexec
 ``` 
 
-Конфигурация модуля FPM. Делается для каждого пользователя, можно определять дополнительные настройки php.ini
+Конфигурация модуля FPM. Делается для каждого пользователя, можно определять дополнительные настройки *php.ini*
 ```bash 
 nano /etc/php5/fpm/pool.d/alex.conf 
 ```
@@ -337,7 +335,7 @@ location /phpmyadmin/ {
 		fastcgi_index index.php;
 	}
 	location ~* ^/phpmyadmin/(.+\.(jpg|jpeg|gif|css|png|js|ico|html|xml|txt))$ {
-	        root /usr/share/;
+	    root /usr/share/;
 	}
 }
 location /phpMyAdmin {
@@ -347,3 +345,21 @@ location /mysql {
 	rewrite ^/* /phpmyadmin last;
 }
 ```
+## Что дальше!?
+
+* [PHP-FPM: Socket vs TCP/IP and sysctl tweaking](http://rtcamp.com/tutorials/php/fpm-sysctl-tweaking/)
+* Для php 5.5 можно использовать OPCache вместо APC([пример1](http://stackoverflow.com/questions/17224798/how-to-use-php-opcache))
+
+## Ubuntu 13.10
+
+Для новой версии Ubuntu ставится apache >= 2.4, в котором по другому задаются доступы в .htaccess, а именно 
+
+**2.2 configuration:**
+
+    Order allow,deny
+    Allow from all
+**2.4 configuration:**
+
+    Require all granted
+    
+Полный список изменений [2.2 -> 2.4](http://httpd.apache.org/docs/current/upgrading.html)
