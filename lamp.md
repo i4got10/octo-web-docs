@@ -86,11 +86,13 @@ extension=dbase.so
 
 [PHP]
 display_errors = On
-display_startup_errors = On
 
 memory_limit = 256M
 upload_max_filesize = 32M
 post_max_size = 32M
+
+;Removing X-Powered-By
+expose_php = off
 
 ; XDEBUG
 xdebug.remote_enable=1
