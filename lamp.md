@@ -95,9 +95,9 @@ post_max_size = 32M
 expose_php = off
 
 ; XDEBUG
-xdebug.remote_enable=1
-xdebug.remote_host=localhost
-xdebug.remote_port=9000
+xdebug.remote_enable = 1
+xdebug.remote_host = localhost
+xdebug.remote_port = 9000
 xdebug.max_nesting_level = 300
 ; http://www.xdebug.org/docs/profiler(enabled by ?XDEBUG_PROFILE)
 xdebug.profiler_enable = 0
