@@ -94,6 +94,8 @@ post_max_size = 32M
 ;Removing X-Powered-By
 expose_php = off
 
+cgi.fix_pathinfo = 0
+
 ; XDEBUG
 xdebug.remote_enable = 1
 xdebug.remote_host = localhost
