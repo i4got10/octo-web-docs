@@ -250,6 +250,8 @@ apt-get install memcached
 ## Установка nginx
 
 ```bash
+add-apt-repository ppa:nginx/stable
+apt-get update
 apt-get install nginx
 service nginx start
 ```
